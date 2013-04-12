@@ -110,6 +110,10 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
     return [[aOsVersions objectAtIndex:1] intValue];
 }
 
++(float)windowHeight{
+    return [[UIScreen mainScreen] bounds].size.height;
+}
+
 +(NSString*)dateToString:(NSDate*)date format:(NSString*)format{
     NSDateFormatter *toStringFormatter;
     toStringFormatter = [[NSDateFormatter alloc] init];
@@ -130,6 +134,14 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
         return @"application/octet-stream";
     }
     return (__bridge NSString *)mimeType;
+}
+
++(NSString*) cacheDir{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray* cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString* cacheDir = [cachePaths objectAtIndex:0];
+    
+    return cacheDir;
 }
 
 + (NSString*) encodeURIComponent:(NSString*) s {
@@ -157,6 +169,10 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
 		srand(time(NULL));
 		initFlag = TRUE;
 	}
+}
+
++(BOOL) is35Inch{
+    return ([self windowHeight] < 568);
 }
 
 +(BOOL) hasClass:(NSString *)className{

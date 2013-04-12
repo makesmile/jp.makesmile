@@ -27,6 +27,7 @@
 + (NSString*) mimeTypeForFileAtPath: (NSString *) path;
 + (NSString*) encodeURIComponent:(NSString*) s;
 +(NSString*) createReviewUrl:(NSString*)appId;
++(NSString*) cacheDir;
 
 +(NSString*)getShortWeekString:(NSDate*)date;
 +(int) getWeekIndex:(NSDate*)date;
@@ -37,8 +38,11 @@
 +(int) getMajorVersion;
 +(int) getMinorVersion;
 
++(float)windowHeight;
+
 + (NSUInteger)randIntRange:(NSRange)range;
 
++(BOOL) is35Inch;
 +(BOOL) hasClass:(NSString*)className;
 +(int) getAppMajorVersion;
 +(int) getAppMinorVersion;

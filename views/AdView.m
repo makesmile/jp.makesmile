@@ -17,7 +17,7 @@
 @synthesize onAdFailed;
 @synthesize onAdLoaded;
 
--(id) initWithRootViewController:(NSString*)mediaNo_ spotNo:(int)spotNo_{
+-(id) initWithMediano:(NSString*)mediaNo_ spotNo:(int)spotNo_{
     self = [super init];
     if(self){
         mediatNo = mediaNo_;
@@ -34,6 +34,7 @@
     self.adView = [[AdstirView alloc]initWithOrigin:CGPointMake(0, 0)];
 	self.adView.media = mediatNo;
 	self.adView.spot = spotNo;
+    self.adView.delegate = self;
 	[self addSubview:self.adView];
 }
 
@@ -52,6 +53,10 @@
     if(onAdFailed != nil){
         onAdFailed(self);
     }
+}
+
+-(void) setRootViewController:(UIViewController *)rootViewController{
+    self.adView.rootViewController = rootViewController;
 }
 
 @end
