@@ -27,6 +27,7 @@
 + (NSString*) mimeTypeForFileAtPath: (NSString *) path;
 + (NSString*) encodeURIComponent:(NSString*) s;
 +(NSString*) createReviewUrl:(NSString*)appId;
++(NSDictionary*)objToJson:(NSObject*)obj;
 
 +(NSString*)getShortWeekString:(NSDate*)date;
 +(int) getWeekIndex:(NSDate*)date;
@@ -36,6 +37,7 @@
 
 +(int) getMajorVersion;
 +(int) getMinorVersion;
++(BOOL) isDataInitialized;
 
 + (NSUInteger)randIntRange:(NSRange)range;
 

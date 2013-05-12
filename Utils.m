@@ -179,6 +179,29 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
     return [version floatValue];
 }
 
++(BOOL) isDataInitialized{
+    return ([[NSUserDefaults standardUserDefaults] integerForKey:@"lastupdated"] != 0);
+}
+
++(NSDictionary*) objToJson:(NSObject *)obj{
+    NSData* dataObj = (NSData*) obj;
+    NSError* error = nil;
+    
+    if ([NSJSONSerialization isValidJSONObject: dataObj]){
+        NSLog(@"valid json");
+    }else{
+        NSLog(@"invalid json");
+    }
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:dataObj options:NSJSONReadingAllowFragments error:&error];
+    if(error != nil){
+        NSLog(@"NSJSONSerialization error:%@", error.debugDescription);
+        // TODO error
+        return nil;
+    }
+    
+    return json;
+}
+
 // ▼ sqlite ==============================================
 
 +(NSString*)stmToString:(sqlite3_stmt*)statement index:(int)index{

@@ -79,4 +79,20 @@
     [self removeObjectsInRange:NSMakeRange(begin, num)];
 }
 
+-(void) reload:(FMResultSet*)results{
+    int i = 0;
+    while([results next]){
+        AbstractModel* rowModel = [self createModel:results];
+        [self replace:rowModel at:i];
+        i++;
+    }
+    
+    [self removeToTail:i];
+}
+
+// abstract 
+-(AbstractModel*) createModel:(FMResultSet*)resultSet{
+    return nil;
+}
+
 @end

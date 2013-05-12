@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "Utils.h"
+#import "ToastView.h"
 
 @class Mediator;
 
@@ -20,6 +21,7 @@
     // トースト
     UIButton* toastButton;
     UILabel* toastLabel;
+    ToastView* toastView;
 
 }
 
@@ -30,5 +32,9 @@
 -(void) hideLoading;
 -(void) updateLoadingView;
 -(void) createLoading;
+-(void) showToast:(NSString*)text;
+-(void) globalQueue:(dispatch_block_t)block;
+-(void) mainQueue:(dispatch_block_t)block;
+
 
 @end

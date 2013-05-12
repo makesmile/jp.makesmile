@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Utils.h"
 
-typedef void (^onload_image_t)(UIImage* image, NSString* key);
+typedef void (^onload_image_t)(UIImage* image, NSString* key, BOOL useCache);
 
 @interface ImageCache : NSObject
 

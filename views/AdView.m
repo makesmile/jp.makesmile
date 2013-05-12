@@ -8,16 +8,13 @@
 
 #import "AdView.h"
 
-#define MEDIA_NO @"MEDIA-b98e22d"
-#define SPOT_NO 1
-
 @implementation AdView
 
 @synthesize adView;
 @synthesize onAdFailed;
 @synthesize onAdLoaded;
 
--(id) initWithRootViewController:(NSString*)mediaNo_ spotNo:(int)spotNo_{
+-(id) initWithMediano:(NSString*)mediaNo_ spotNo:(int)spotNo_{
     self = [super init];
     if(self){
         mediatNo = mediaNo_;
@@ -31,9 +28,11 @@
 -(void) initialize{
     self.frame = CGRectMake(0, 0, 320, 50);
     self.backgroundColor = UIColorFromHex(0x3f3f3f);
-    self.adView = [[AdstirView alloc]initWithOrigin:CGPointMake(0, 0)];
+//    self.adView = [[AdstirView alloc]initWithOrigin:CGPointMake(0, 0)];
+    self.adView = [[AdstirView alloc] init];
 	self.adView.media = mediatNo;
 	self.adView.spot = spotNo;
+    self.adView.delegate = self;
 	[self addSubview:self.adView];
 }
 
@@ -52,6 +51,10 @@
     if(onAdFailed != nil){
         onAdFailed(self);
     }
+}
+
+-(void) setRootViewController:(UIViewController *)rootViewController{
+    self.adView.rootViewController = rootViewController;
 }
 
 @end

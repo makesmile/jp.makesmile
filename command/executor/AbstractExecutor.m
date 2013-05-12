@@ -27,7 +27,10 @@
     total = [commandList count];
     current = 0;
     [self assignDelegate];
-    [self tryNext:data];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self tryNext:data];
+    });
+    
 }
 
 -(void) assignDelegate{

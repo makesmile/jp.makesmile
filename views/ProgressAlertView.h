@@ -12,6 +12,6 @@
     UIProgressView* progressView;
 }
 
--(void) update:(float)current total:(float)total;
+-(void) update:(int)current total:(int)total;
 
 @end

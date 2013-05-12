@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AdstirView.h"
 #import "Utils.h"
+#import "NADView.h"
 
 @class AdView;
 
@@ -28,8 +29,9 @@ typedef void(^onAdFailed_t)(AdView* adView);
 @property (strong) onAdFailed_t onAdFailed;
 @property (strong) onAdLoaded_t onAdLoaded;
 @property (nonatomic, retain) AdstirView* adView;
+@property (nonatomic) UIViewController* rootViewController;
 
--(id) initWithRootViewController:(NSString*)mediaNo_ spotNo:(int)spotNo_;
+-(id) initWithMediano:(NSString*)mediaNo_ spotNo:(int)spotNo_;
 -(void) start;
 
 @end

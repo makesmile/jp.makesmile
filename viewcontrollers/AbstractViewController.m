@@ -28,6 +28,7 @@
     if(self){
         isLoading = NO;
         windowHeight = [[UIScreen mainScreen] bounds].size.height;
+        toastView = [[ToastView alloc] init];
         [self initialize];
         [self internalInitialize];
         [self initialized];
@@ -116,6 +117,31 @@
     [UIView setAnimationDuration:0.5f];
     loadingView.alpha = 0.0f;
     [UIView commitAnimations];
+}
+
+-(void) showToast:(NSString *)text{
+    [toastView setLabel:text];
+    [toastView removeFromSuperview];
+    [self.view addSubview:toastView];
+    
+    toastView.alpha = 0;
+    [UIView animateWithDuration:0.5f animations:^{
+        toastView.alpha = 1.0f;
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3f delay:2.0f options:UIViewAnimationOptionShowHideTransitionViews animations:^{
+            toastView.alpha = 0.0f;
+        } completion:^(BOOL finished) {
+            
+        }];
+    }];
+}
+
+-(void) globalQueue:(dispatch_block_t)block{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
+}
+
+-(void) mainQueue:(dispatch_block_t)block{
+    dispatch_async(dispatch_get_main_queue(), block);
 }
 
 @end

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AbstractModel.h"
+#import "FMResultSet.h"
 
 @interface AbstractModelList : NSObject{
     NSMutableArray* items;
@@ -23,5 +24,7 @@
 -(void) deleteItem:(int)id_;
 -(void) removeObjectsInRange:(NSRange)range;
 -(void) removeToTail:(int)begin;
+
+-(void) reload:(FMResultSet*)results;
 
 @end

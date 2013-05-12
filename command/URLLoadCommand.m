@@ -69,6 +69,9 @@
 -(void) internalExecute:(NSData*)data{
     loading = YES;
     NSOperationQueue* queue = [[NSOperationQueue alloc] init];
+    
+    // TODO priority
+    [urlLoadOperation setQueuePriority:NSOperationQueuePriorityVeryHigh];
     [queue addOperation:urlLoadOperation];
 }
 

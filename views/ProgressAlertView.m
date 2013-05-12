@@ -28,9 +28,9 @@
 
 // ▼ public ==================================
 
--(void) update:(float)current total:(float)total{
-    [self setMessage:[NSString stringWithFormat:@"%f/%f", current, total]];
-    progressView.progress = current / total;
+-(void) update:(int)current total:(int)total{
+    [self setMessage:[NSString stringWithFormat:@"%d/%d", current, total]];
+    progressView.progress = (float) (float)current / (float)total;
 }
 
 /*

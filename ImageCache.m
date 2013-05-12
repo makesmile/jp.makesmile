@@ -36,11 +36,17 @@ static NSMutableDictionary* cacheList;
     [cacheList setObject:image forKey:url];
 }
 
+static int loadingNum = 0;
 +(void) loadImage:(NSString*)url callback:(onload_image_t)callback{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        sleep((float)loadingNum * 0.1f); // TODO うーん
+        loadingNum++;
+//        NSLog(@"add:loadingNum:%d", loadingNum);
         // キャッシュがあればそれ使って終わり
         if([self hasCache:url]){
-            callback([cacheList objectForKey:url], url);
+            callback([cacheList objectForKey:url], url, YES);
+            loadingNum--;
+//            NSLog(@"sub:loadingNum:%d", loadingNum);
             return;
         }
         
@@ -49,53 +55,16 @@ static NSMutableDictionary* cacheList;
                           [UIImage imageWithData:
                            [NSData dataWithContentsOfURL:[NSURL URLWithString:url]]]];
         if(image == nil){
+            NSLog(@"fail : %@", url);
+            loadingNum--;
+//            NSLog(@"sub:loadingNum:%d", loadingNum);
             return;
         }
+        loadingNum--;
+//        NSLog(@"sub:loadingNum:%d", loadingNum);
         [self setCache:image forKey:url];
-        
-        callback(image, url);
+        callback(image, url, NO);
     });
 }
-
-//thumbImageView.image = nil;
-//// 画像なし
-//if([imageUrl isEqualToString:@""]){
-//    return;
-//}
-//
-//CGRect imageFrame = [self createImageFrame];
-//UIImage* image = [ImageCache getChache:imageUrl];
-//if(image){
-//    UIImage* scaledImage = [Utils getResizedImage:image width:imageFrame.size.width height:imageFrame.size.height];
-//    [thumbImageView setImage:scaledImage];
-//    thumbImageView.frame = imageFrame;
-//    return;
-//}
-//
-//// TODO imageDic(キャッシュはどっかで消さないとやばい)
-//image = [[UIImage alloc] init];
-//[ImageCache setCache:image forKey:imageUrl];
-//
-//dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-//    NSString* requestUrl = [NSString stringWithFormat:@"%@%@", IMAGE_URL, imageUrl];
-//    UIImage* image = [Utils scaledImageWithImage:
-//                      [UIImage imageWithData:
-//                       [NSData dataWithContentsOfURL:[NSURL URLWithString:requestUrl]]]];
-//    if(image == nil){
-//        return;
-//    }
-//    [ImageCache setCache:image forKey:imageUrl];
-//    if(imageUrl != coco.thumbImage){
-//        [indicator stopAnimating];
-//        return;
-//    }
-//    UIImage* scaledImage = [Utils getResizedImage:image width:imageFrame.size.width height:imageFrame.size.height];
-//    // UIの更新はメインスレッド
-//    dispatch_sync(dispatch_get_main_queue(), ^{
-//        [thumbImageView setImage:scaledImage];
-//        [indicator stopAnimating];
-//        thumbImageView.frame = imageFrame;
-//    });
-//});
 
 @end
