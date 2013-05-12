@@ -27,7 +27,11 @@
 + (NSString*) mimeTypeForFileAtPath: (NSString *) path;
 + (NSString*) encodeURIComponent:(NSString*) s;
 +(NSString*) createReviewUrl:(NSString*)appId;
+<<<<<<< HEAD
 +(NSDictionary*)objToJson:(NSObject*)obj;
+=======
++(NSString*) cacheDir;
+>>>>>>> 40476a0fc34877698d3aef90e9b328ed3c369b6d
 
 +(NSString*)getShortWeekString:(NSDate*)date;
 +(int) getWeekIndex:(NSDate*)date;
@@ -39,8 +43,11 @@
 +(int) getMinorVersion;
 +(BOOL) isDataInitialized;
 
++(float)windowHeight;
+
 + (NSUInteger)randIntRange:(NSRange)range;
 
++(BOOL) is35Inch;
 +(BOOL) hasClass:(NSString*)className;
 +(int) getAppMajorVersion;
 +(int) getAppMinorVersion;

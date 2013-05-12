@@ -42,7 +42,7 @@
     toastButton.hidden = YES;
     toastButton.alpha = 0.0f;
     // トーストラベル
-    toastLabel = [[UILabel alloc] initWithFrame:CGRectMake(1, 0, 200, 100)];
+    toastLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 200, 100)];
     toastLabel.backgroundColor = [UIColor clearColor];
     toastLabel.textColor = [UIColor whiteColor];
     toastLabel.textAlignment = UITextAlignmentCenter;
