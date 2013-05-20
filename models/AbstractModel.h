@@ -8,14 +8,25 @@
 
 #import <Foundation/Foundation.h>
 #import "FMResultSet.h"
+#import "Utils.h"
+#import "NSDate+Softbuild.h"
 
 @interface AbstractModel : NSObject{
     int id_;
+    NSDate* createdDate;
+    NSDate* updatedDate;
+    NSString* createdAt;
+    NSString* updatedAt;
 }
 
 -(id) initWithResultSet:(FMResultSet*)resultSet;
 -(void) setParams:(FMResultSet*)resultSet;
+-(NSDate*) stringToDate:(NSString*)string;
 
 @property int id_;
+@property (readonly) NSDate* createdDate;
+@property (readonly) NSDate* updatedDate;
+@property (readonly) NSString* createdAt;
+@property (readonly) NSString* updatedAt;
 
 @end

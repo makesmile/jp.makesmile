@@ -27,11 +27,13 @@
 + (NSString*) mimeTypeForFileAtPath: (NSString *) path;
 + (NSString*) encodeURIComponent:(NSString*) s;
 +(NSString*) createReviewUrl:(NSString*)appId;
-<<<<<<< HEAD
 +(NSDictionary*)objToJson:(NSObject*)obj;
-=======
++(NSArray*)objToJsonArray:(NSObject*)obj;
 +(NSString*) cacheDir;
->>>>>>> 40476a0fc34877698d3aef90e9b328ed3c369b6d
+
++(void)openReviewUrl:(NSString*)appId;
++(NSString*) orNullString:(NSString*)str;
+
 
 +(NSString*)getShortWeekString:(NSDate*)date;
 +(int) getWeekIndex:(NSDate*)date;

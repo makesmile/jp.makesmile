@@ -117,9 +117,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite{
     [self setValue:[NSNumber numberWithBool:NO] forKey:@"isExecuting"];
     [self setValue:[NSNumber numberWithBool:YES] forKey:@"isFinished"];
     [callbackObject onError:self error:error];
-    NSLog(@"urlloader error ");
     if(onError != nil){
-        NSLog(@"exists urlloader error ");
         onError(self, error);
     }
 }

@@ -11,13 +11,20 @@
 @implementation ImageCache
 
 static NSMutableDictionary* cacheList;
+static NSOperationQueue* queue;
 
 +(void) create{
     cacheList = [[NSMutableDictionary alloc] init];
+    queue = [[NSOperationQueue alloc] init];
 }
 
 +(void) clear{
     [cacheList removeAllObjects];
+    [queue cancelAllOperations];
+}
+
++(void) clear:(NSString*)key{
+    [cacheList removeObjectForKey:key];
 }
 
 +(BOOL) hasCache:(NSString*)url{
@@ -38,32 +45,31 @@ static NSMutableDictionary* cacheList;
 
 static int loadingNum = 0;
 +(void) loadImage:(NSString*)url callback:(onload_image_t)callback{
+//    url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        sleep((float)loadingNum * 0.1f); // TODO うーん
         loadingNum++;
-//        NSLog(@"add:loadingNum:%d", loadingNum);
         // キャッシュがあればそれ使って終わり
         if([self hasCache:url]){
             callback([cacheList objectForKey:url], url, YES);
             loadingNum--;
-//            NSLog(@"sub:loadingNum:%d", loadingNum);
             return;
         }
         
-        // なければ取りにいく
-        UIImage* image = [Utils scaledImageWithImage:
-                          [UIImage imageWithData:
-                           [NSData dataWithContentsOfURL:[NSURL URLWithString:url]]]];
-        if(image == nil){
-            NSLog(@"fail : %@", url);
+        URLLoadOperation* op = [[URLLoadOperation alloc] init];
+        [op setUrl:url];
+        op.onFinished = ^(URLLoadOperation* operation, NSData* data){
             loadingNum--;
-//            NSLog(@"sub:loadingNum:%d", loadingNum);
-            return;
-        }
-        loadingNum--;
-//        NSLog(@"sub:loadingNum:%d", loadingNum);
-        [self setCache:image forKey:url];
-        callback(image, url, NO);
+            UIImage* image = [UIImage imageWithData:data];
+            if(image == nil) return;
+            [self setCache:image forKey:url];
+            callback(image, url, NO);
+        };
+        op.onError = ^(URLLoadOperation* operation, NSError* error){
+            loadingNum--;
+        };
+        [queue addOperation:op];
+        
+        NSLog(@"%d", queue.operationCount);
     });
 }
 

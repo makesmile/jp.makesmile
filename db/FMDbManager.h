@@ -29,6 +29,6 @@
 
 // db openしてる前提
 -(void) updateTable:(NSString*)tableName data:(NSDictionary*)data;
-
+-(void) updateTable:(NSString*)tableName data:(NSDictionary*)data noColumns:(NSArray*)noColumns;
 
 @end

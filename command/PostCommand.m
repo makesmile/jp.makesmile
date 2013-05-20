@@ -24,11 +24,11 @@
 }
 
 -(void) internalExecute:(NSObject *)data{
+    NSLog(@"PostCommand.internalExecute");
     NSURL *URL = [NSURL URLWithString:url];
     R9HTTPRequest *request = [[R9HTTPRequest alloc] initWithURL:URL];
     [request setHTTPMethod:@"POST"];
     for (NSString* key in values) {
-        NSLog(@"key:%@", key);
         id value = [values objectForKey:key];
         [request addBody:value forKey:key];
     }

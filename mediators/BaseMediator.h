@@ -23,6 +23,8 @@
 -(void) showToast:(NSString *)text align:(NSTextAlignment)align;
 -(dispatch_queue_t) mainQueue;
 -(dispatch_queue_t) globalQueue;
+-(void) mainQueueBlock:(dispatch_block_t) block;
+-(void) globalQueueBlock:(dispatch_block_t) block;
 
 
 @end

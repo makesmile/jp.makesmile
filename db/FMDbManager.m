@@ -77,21 +77,33 @@
     [dbLock unlock];
 }
 
--(NSString*) createInsertSql:(NSString*)tableName record:(NSDictionary*)record{
+-(NSString*) createInsertSql:(NSString*)tableName record:(NSDictionary*)record noColmuns:(NSArray*)noColumns{
     NSMutableString* ms = [NSMutableString string];
     [ms appendString:@"INSERT OR IGNORE INTO "];
     [ms appendString:tableName];
     [ms appendString:@" ("];
     NSArray* keyList = [record allKeys];
+    // sort
     keyList = [keyList sortedArrayUsingComparator:^(id o1, id o2) {
         return [o1 compare:o2];
     }];
+    // noColumns
+    NSMutableArray* newKeyList = [[NSMutableArray alloc] init];
+    for(NSString* key in keyList){
+        if([self hasStringInArray:key array:noColumns]) continue;
+        [newKeyList addObject:key];
+    }
+    keyList = newKeyList;
+    
     NSString* keyString = [keyList componentsJoinedByString:@","];
     [ms appendString:keyString];
     [ms appendString:@") VALUES ("];
     
     NSMutableArray* placeArray = [[NSMutableArray alloc] init];
     for(NSString* key in keyList){
+        if([self hasStringInArray:key array:noColumns]){
+            continue;
+        }
         [placeArray addObject:@"?"];
     }
     NSString* placeString = [placeArray componentsJoinedByString:@","];
@@ -101,7 +113,16 @@
     return ms;
 }
 
--(NSString*) createUpdateSql:(NSString*)tableName record:(NSDictionary*)record{
+-(BOOL) hasStringInArray:(NSString*)str array:(NSArray*)array{
+    for(NSString* s in array){
+        if([s isEqualToString:str])
+            return YES;
+    }
+    
+    return NO;
+}
+
+-(NSString*) createUpdateSql:(NSString*)tableName record:(NSDictionary*)record noColumns:(NSArray*)noColumns{
     NSMutableString* ms = [NSMutableString string];
     [ms appendString:@"UPDATE "];
     [ms appendString:tableName];
@@ -113,12 +134,22 @@
     NSMutableArray* placeArray = [[NSMutableArray alloc] init];
     for(NSString* key in keyList){
         if([key isEqualToString:@"id"]) continue;
+        if([self hasStringInArray:key array:noColumns])
+            continue;
         [placeArray addObject:[NSString stringWithFormat:@"%@ = ?", key]];
     }
     [ms appendString:[placeArray componentsJoinedByString:@","]];
     [ms appendString:@" WHERE id = ?"];
     
     return ms;
+}
+
+-(NSString*) createInsertSql:(NSString*)tableName record:(NSDictionary*)record{
+    return [self createInsertSql:tableName record:record noColmuns:nil];
+}
+
+-(NSString*) createUpdateSql:(NSString*)tableName record:(NSDictionary*)record{
+    return [self createUpdateSql:tableName record:record noColumns:nil];
 }
 
 -(NSString*) createDeleteSql:(NSString*)tableName record:(NSDictionary*)record{
@@ -149,14 +180,14 @@
     [self firstCreate];
 }
 
--(void) updateTable:(NSString*)tableName data:(NSDictionary*)data{
+-(void) updateTable:(NSString*)tableName data:(NSDictionary*)data noColumns:(NSArray*)noColumns{
     NSArray* created = [data objectForKey:@"created"];
     NSArray* updated = [data objectForKey:@"updated"];
     NSArray* deleted = [data objectForKey:@"deleted"];
     
     // create =========
     if([created count] != 0){
-        NSString* sql = [self createInsertSql:tableName record:[created objectAtIndex:0]];
+        NSString* sql = [self createInsertSql:tableName record:[created objectAtIndex:0] noColmuns:noColumns];
         NSArray* keyList = [[created objectAtIndex:0] allKeys];
         keyList = [keyList sortedArrayUsingComparator:^(id o1, id o2) {
             return [o1 compare:o2];
@@ -165,19 +196,23 @@
             NSDictionary* row = [created objectAtIndex:i];
             NSMutableArray* valueList = [[NSMutableArray alloc] init];
             for(int j=0,jMax=[keyList count];j<jMax;j++){
-                [valueList addObject:[row objectForKey:[keyList objectAtIndex:j]]];
+                NSString* key = [keyList objectAtIndex:j];
+                if([self hasStringInArray:key array:noColumns]){
+                    continue;
+                }
+                [valueList addObject:[row objectForKey:key]];
             }
             [db executeUpdate:sql withArgumentsInArray:valueList];
             if([self hasError]){
                 return;
             }
-//            NSLog(@"on insert :%@", [row objectForKey:@"title"]);
+            //            NSLog(@"on insert :%@", [row objectForKey:@"title"]);
         }
     }
     
     // update ============
     if([updated count] != 0){
-        NSString* sql = [self createUpdateSql:tableName record:[updated objectAtIndex:0]];
+        NSString* sql = [self createUpdateSql:tableName record:[updated objectAtIndex:0] noColumns:noColumns];
         NSArray* keyList = [[updated objectAtIndex:0] allKeys];
         keyList = [keyList sortedArrayUsingComparator:^(id o1, id o2) {
             return [o1 compare:o2];
@@ -186,6 +221,7 @@
             NSMutableArray* valueList = [[NSMutableArray alloc] init];
             for(NSString* key in keyList){
                 if([key isEqualToString:@"id"]) continue;
+                if([self hasStringInArray:key array:noColumns]) continue;
                 [valueList addObject:[row objectForKey:key]];
             }
             [valueList addObject:[row objectForKey:@"id"]];
@@ -198,6 +234,10 @@
     if([deleted count] != 0){
         NSString* sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE id = ?", tableName];
     }
+}
+
+-(void) updateTable:(NSString*)tableName data:(NSDictionary*)data{
+    [self updateTable:tableName data:data noColumns:nil];
 }
 
 @end

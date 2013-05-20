@@ -71,7 +71,7 @@
     NSOperationQueue* queue = [[NSOperationQueue alloc] init];
     
     // TODO priority
-    [urlLoadOperation setQueuePriority:NSOperationQueuePriorityVeryHigh];
+//    [urlLoadOperation setQueuePriority:NSOperationQueuePriorityVeryHigh];
     [queue addOperation:urlLoadOperation];
 }
 

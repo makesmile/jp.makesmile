@@ -26,5 +26,7 @@
 -(void) removeToTail:(int)begin;
 
 -(void) reload:(FMResultSet*)results;
+-(BOOL) addList:(FMResultSet*)results;
+-(int) indexById:(int)id_;
 
 @end

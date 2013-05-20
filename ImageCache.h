@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Utils.h"
+#import "URLLoadOperation.h"
 
 typedef void (^onload_image_t)(UIImage* image, NSString* key, BOOL useCache);
 
@@ -18,6 +19,7 @@ typedef void (^onload_image_t)(UIImage* image, NSString* key, BOOL useCache);
 +(BOOL) hasCache:(NSString*)url;
 +(UIImage*) getChache:(NSString*)url;
 +(void) setCache:(UIImage*)image forKey:(NSString*)url;
++(void) clear:(NSString*)key;
 
 +(void) loadImage:(NSString*)url callback:(onload_image_t)callback;
 

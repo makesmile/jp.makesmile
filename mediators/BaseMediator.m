@@ -51,11 +51,20 @@
 -(void) initialize{}
 -(void) becomeActive{}
 -(void) memoryWarning{}
+
 -(dispatch_queue_t) mainQueue{
     return dispatch_get_main_queue();
 }
 -(dispatch_queue_t) globalQueue{
     return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+}
+
+-(void) mainQueueBlock:(dispatch_block_t) block{
+    dispatch_async([self mainQueue], block);
+}
+
+-(void) globalQueueBlock:(dispatch_block_t) block{
+    dispatch_async([self globalQueue], block);
 }
 
 @end

@@ -62,6 +62,16 @@
     return nil;
 }
 
+-(int) indexById:(int)id_;{
+    int i,max = [self count];
+    for(i=0;i<max;i++){
+        if([self get:i].id_ == id_)
+            return i;
+    }
+    
+    return -1;
+}
+
 -(void) deleteItem:(int)id_{
     AbstractModel* item = [self getById:id_];
     [items removeObject:item];
@@ -90,7 +100,19 @@
     [self removeToTail:i];
 }
 
-// abstract 
+-(BOOL) addList:(FMResultSet*)results{
+    int i = 0;
+    while([results next]){
+        AbstractModel* rowModel = [self createModel:results];
+        
+        [self add:rowModel];
+        i++;
+    }
+    
+    return (i != 0);
+}
+
+// abstract
 -(AbstractModel*) createModel:(FMResultSet*)resultSet{
     return nil;
 }

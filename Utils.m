@@ -54,8 +54,7 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
 }
 
 +(NSDate*)pubDateToNSDate:(NSString*)pubDate{
-    NSDateFormatter* dateFormatter;
-    dateFormatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter* dateFormatter = [self getDateFormatter];
     
     // TODO なんかUSに設定しないとうまくとれない
     [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"US"]];
@@ -79,11 +78,12 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
 }
 
 +(NSDate*)stringToDate:(NSString*)pubDate format:(NSString*)format{
-    NSDateFormatter* dateFormatter;
-    dateFormatter = [[NSDateFormatter alloc] init];
+    if(dateFormatter == nil){
+        dateFormatter = [[NSDateFormatter alloc] init];
+    }
     
     // TODO なんかUSに設定しないとうまくとれない
-    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"US"]];
+    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"JST"]];
     [dateFormatter setDateFormat:format];
     NSDate* date = [dateFormatter dateFromString:pubDate];
     
@@ -114,9 +114,15 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
     return [[UIScreen mainScreen] bounds].size.height;
 }
 
++(void)openReviewUrl:(NSString*)appId{
+    // レビューを開く
+    NSString* reviewUrl = [NSString stringWithFormat:@"http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=%@&mt=8&type=Purple+Software", appId];
+    NSLog(@"%@", reviewUrl);
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:reviewUrl]];
+}
+
 +(NSString*)dateToString:(NSDate*)date format:(NSString*)format{
-    NSDateFormatter *toStringFormatter;
-    toStringFormatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *toStringFormatter = [self getDateFormatter];
     toStringFormatter.dateFormat  = format;
     return [toStringFormatter stringFromDate:date];
 }
@@ -199,6 +205,10 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
     return ([[NSUserDefaults standardUserDefaults] integerForKey:@"lastupdated"] != 0);
 }
 
++(NSString*) orNullString:(NSString*)str{
+    return (str != nil) ? str : @"";
+}
+
 +(NSDictionary*) objToJson:(NSObject *)obj{
     NSData* dataObj = (NSData*) obj;
     NSError* error = nil;
@@ -209,6 +219,25 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
         NSLog(@"invalid json");
     }
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:dataObj options:NSJSONReadingAllowFragments error:&error];
+    if(error != nil){
+        NSLog(@"NSJSONSerialization error:%@", error.debugDescription);
+        // TODO error
+        return nil;
+    }
+    
+    return json;
+}
+
++(NSArray*) objToJsonArray:(NSObject *)obj{
+    NSData* dataObj = (NSData*) obj;
+    NSError* error = nil;
+    
+    if ([NSJSONSerialization isValidJSONObject: dataObj]){
+        NSLog(@"valid json");
+    }else{
+        NSLog(@"invalid json");
+    }
+    NSArray *json = [NSJSONSerialization JSONObjectWithData:dataObj options:NSJSONReadingAllowFragments error:&error];
     if(error != nil){
         NSLog(@"NSJSONSerialization error:%@", error.debugDescription);
         // TODO error
@@ -323,6 +352,17 @@ static NSString* const array[] = {nil, @"日", @"月", @"火", @"水", @"木", @
 //    CGImageRelease(clip);
     
     return clipedImage;
+}
+
+
+static NSDateFormatter* dateFormatter;
++(NSDateFormatter*) getDateFormatter{
+    if(dateFormatter == nil){
+        dateFormatter = [[NSDateFormatter alloc] init];
+        NSLog(@"createDateFormmater");
+    }
+    
+    return dateFormatter;
 }
 
 @end

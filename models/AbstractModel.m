@@ -11,15 +11,35 @@
 @implementation AbstractModel
 
 @synthesize id_;
+@synthesize createdAt;
+@synthesize updatedAt;
 
 -(id) initWithResultSet:(FMResultSet*)resultSet{
     self = [super init];
     if(self){
         id_ = [resultSet intForColumn:@"id"];
+        createdAt = [resultSet stringForColumn:@"created_at"];
+        updatedAt = [resultSet stringForColumn:@"updated_at"];
         [self setParams:resultSet];
     }
     
     return self;
+}
+
+-(NSDate*) createdDate{
+    if(createdDate == nil)
+        createdDate = [self stringToDate:createdAt];
+    return createdDate;
+}
+
+-(NSDate*) updatedDate{
+    if(updatedDate == nil)
+        updatedDate = [self stringToDate:updatedAt];
+    return updatedDate;
+}
+
+-(NSDate*) stringToDate:(NSString*)string{
+    return [Utils stringToDate:string format:@"yyyy-MM-dd'T'HH:mm:sszzz"];
 }
 
 // abstract
